@@ -5,12 +5,22 @@ function Install-CL {
 
     # Criar pasta de destino
     if (-not (Test-Path -Path $destFolder)) {
-        New-Item -ItemType Directory -Path $destFolder
+        New-Item -ItemType Directory -Path $destFolder -Force | Out-Null
     }
 
     # Baixar o ZIP
-    if (-not (Download-Zip -Url $zipUrl -DestinationPath $zipFile)) {
-        Write-Host "Falha no download ou verificação do pacote CL. Abortando!" -ForegroundColor Red
+    Write-Host "Baixando o pacote CL..." -ForegroundColor Cyan
+    try {
+        Invoke-WebRequest -Uri $zipUrl -OutFile $zipFile
+        Write-Host "Pacote CL baixado com sucesso!" -ForegroundColor Green
+    } catch {
+        Write-Host "Falha no download do pacote CL: $_" -ForegroundColor Red
+        return
+    }
+
+    # Verificar se o arquivo ZIP existe
+    if (-not (Test-Path -Path $zipFile)) {
+        Write-Host "Erro: O arquivo ZIP não foi baixado corretamente!" -ForegroundColor Red
         return
     }
 
@@ -53,6 +63,8 @@ function Install-CL {
         Write-Host "Arquivo Adobe Reader não encontrado!" -ForegroundColor Red
     }
 
+    # Limpar arquivos temporários
+    Remove-Item -Path $zipFile -Force
     Write-Host "Pacote CL instalado com sucesso e arquivos temporários removidos!" -ForegroundColor Green
 }
 
