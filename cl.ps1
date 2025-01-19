@@ -1,50 +1,58 @@
-# Painel Interativo em PowerShell
+Add-Type -AssemblyName System.Windows.Forms
 
-function Show-Menu {
-    cls
-    Write-Host "========== Painel de Controle ==========" -ForegroundColor Cyan
-    Write-Host "1. Função 1: Exibir Data e Hora" -ForegroundColor Yellow
-    Write-Host "2. Função 2: Listar Arquivos no Diretório Atual" -ForegroundColor Yellow
-    Write-Host "3. Função 3: Testar Conexão com a Internet" -ForegroundColor Yellow
-    Write-Host "4. Sair" -ForegroundColor Red
-    Write-Host "========================================"
+# Função de exemplo (substitua com seus scripts reais)
+function Execute-Op1 {
+    Write-Host "Executando Opção 1..."
+    # Coloque seu script ou função aqui
 }
 
-function Execute-Option1 {
-    Write-Host "Data e Hora Atual:" (Get-Date) -ForegroundColor Green
-    Pause
+function Execute-Op2 {
+    Write-Host "Executando Opção 2..."
+    # Coloque outro script ou função aqui
 }
 
-function Execute-Option2 {
-    Write-Host "Arquivos no Diretório Atual:" -ForegroundColor Green
-    Get-ChildItem | ForEach-Object { Write-Host $_.Name }
-    Pause
-}
+# Cria uma nova janela (formulário)
+$form = New-Object System.Windows.Forms.Form
+$form.Text = "Painel de Controle"
+$form.Size = New-Object System.Drawing.Size(400, 300)
 
-function Execute-Option3 {
-    Write-Host "Testando Conexão com a Internet..." -ForegroundColor Green
-    try {
-        $response = Test-Connection -ComputerName google.com -Count 1 -Quiet
-        if ($response) {
-            Write-Host "Conexão bem-sucedida!" -ForegroundColor Green
-        } else {
-            Write-Host "Falha na conexão." -ForegroundColor Red
-        }
-    } catch {
-        Write-Host "Erro ao testar a conexão: $_" -ForegroundColor Red
-    }
-    Pause
-}
+# Cria um botão para a Opção 1
+$button1 = New-Object System.Windows.Forms.Button
+$button1.Text = "Executar Opção 1"
+$button1.Size = New-Object System.Drawing.Size(120, 40)
+$button1.Location = New-Object System.Drawing.Point(50, 50)
 
-# Loop Principal
-do {
-    Show-Menu
-    $choice = Read-Host "Escolha uma opção"
-    switch ($choice) {
-        1 { Execute-Option1 }
-        2 { Execute-Option2 }
-        3 { Execute-Option3 }
-        4 { Write-Host "Saindo..." -ForegroundColor Red; break }
-        default { Write-Host "Opção inválida! Tente novamente." -ForegroundColor Red; Pause }
-    }
-} while ($true)
+# Função para quando o botão 1 for clicado
+$button1.Add_Click({
+    Execute-Op1
+})
+
+# Cria um botão para a Opção 2
+$button2 = New-Object System.Windows.Forms.Button
+$button2.Text = "Executar Opção 2"
+$button2.Size = New-Object System.Drawing.Size(120, 40)
+$button2.Location = New-Object System.Drawing.Point(50, 100)
+
+# Função para quando o botão 2 for clicado
+$button2.Add_Click({
+    Execute-Op2
+})
+
+# Cria um botão para fechar o painel
+$button3 = New-Object System.Windows.Forms.Button
+$button3.Text = "Fechar"
+$button3.Size = New-Object System.Drawing.Size(120, 40)
+$button3.Location = New-Object System.Drawing.Point(50, 150)
+
+# Função para fechar a janela
+$button3.Add_Click({
+    $form.Close()
+})
+
+# Adiciona os botões ao formulário
+$form.Controls.Add($button1)
+$form.Controls.Add($button2)
+$form.Controls.Add($button3)
+
+# Exibe a janela
+$form.ShowDialog()
